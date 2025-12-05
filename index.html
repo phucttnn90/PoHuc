@@ -1,204 +1,290 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trang Web Của Tôi</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-        }
-
-        header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-
-        nav {
-            background-color: #2c3e50;
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: #667eea;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 2rem;
-        }
-
-        section {
-            margin-bottom: 4rem;
-        }
-
-        section h2 {
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            color: #2c3e50;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 0.5rem;
-        }
-
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .card h3 {
-            color: #667eea;
-            margin-bottom: 1rem;
-        }
-
-        .btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 0.8rem 2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: transform 0.3s;
-            margin-top: 1rem;
-        }
-
-        .btn:hover {
-            transform: scale(1.05);
-        }
-
-        footer {
-            background-color: #2c3e50;
-            color: white;
-            text-align: center;
-            padding: 2rem;
-            margin-top: 4rem;
-        }
-
-        @media (max-width: 768px) {
-            header h1 {
-                font-size: 2rem;
-            }
-
-            nav ul {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .card-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    <title>Coderon - Digital Explorer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <!-- Header -->
     <header>
-        <h1>🚀 Chào mừng đến với trang web của tôi</h1>
-        <p>Được xây dựng với GitHub Pages</p>
+        <div class="container header-inner">
+            <div class="logo">Coderon</div>
+            <nav class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Videos</a>
+                <a href="#">Archive</a>
+                <a href="#">Get Theme</a>
+                <a href="#">...</a>
+            </nav>
+            <div class="header-actions">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <span>Search posts...</span>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#home">Trang chủ</a></li>
-            <li><a href="#about">Giới thiệu</a></li>
-            <li><a href="#projects">Dự án</a></li>
-            <li><a href="#contact">Liên hệ</a></li>
-        </ul>
-    </nav>
-
     <div class="container">
-        <section id="home">
-            <h2>Trang chủ</h2>
-            <p>Đây là trang web tĩnh đơn giản được host trên GitHub Pages. Bạn có thể tùy chỉnh nội dung này theo ý muốn của mình.</p>
-        </section>
-
-        <section id="about">
-            <h2>Giới thiệu</h2>
-            <p>GitHub Pages là một dịch vụ hosting tĩnh miễn phí cho phép bạn tạo website trực tiếp từ repository GitHub của mình.</p>
-        </section>
-
-        <section id="projects">
-            <h2>Dự án</h2>
-            <div class="card-grid">
-                <div class="card">
-                    <h3>Dự án 1</h3>
-                    <p>Mô tả ngắn về dự án của bạn. Có thể là portfolio, blog, hoặc bất kỳ nội dung nào bạn muốn.</p>
-                    <a href="#" class="btn">Xem thêm</a>
-                </div>
-                <div class="card">
-                    <h3>Dự án 2</h3>
-                    <p>Thêm nhiều card để showcase các dự án hoặc nội dung khác nhau của bạn.</p>
-                    <a href="#" class="btn">Xem thêm</a>
-                </div>
-                <div class="card">
-                    <h3>Dự án 3</h3>
-                    <p>GitHub Pages hỗ trợ HTML, CSS, và JavaScript thuần túy hoặc các static site generator như Jekyll.</p>
-                    <a href="#" class="btn">Xem thêm</a>
+        
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-card">
+                <div class="hero-image"></div>
+                <div class="hero-content">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Alex" class="avatar">
+                    <h1 class="hero-title">Hi! I'm Alex </h1>
+                    <p class="hero-desc">A digital explorer, coder, and Linux advocate. This blog is my personal knowledge base on productivity, programming, and the freedom of information.</p>
+                    <button class="btn btn-primary">Let's Work Together</button>
                 </div>
             </div>
         </section>
 
-        <section id="contact">
-            <h2>Liên hệ</h2>
-            <p>Email: your-email@example.com</p>
-            <p>GitHub: <a href="https://github.com/your-username" style="color: #667eea;">@your-username</a></p>
+        <!-- Nerd Stuff -->
+        <section class="nerd-stuff">
+            <h2 class="section-title" style="text-align: center;">Nerd Stuff</h2>
+            <div class="nerd-stuff-grid">
+                <div class="nerd-item"><i class="fas fa-gamepad fa-2x" style="color: #a78bfa;"></i></div>
+                <div class="nerd-item"><i class="fas fa-keyboard fa-2x" style="color: #f472b6;"></i></div>
+                <div class="nerd-item"><i class="fas fa-headphones fa-2x" style="color: #fbbf24;"></i></div>
+                <div class="nerd-item"><i class="fas fa-mouse fa-2x" style="color: #34d399;"></i></div>
+            </div>
         </section>
+
+        <!-- The Binary Journal -->
+        <section class="binary-journal">
+            <h2 class="section-title">The Binary Journal</h2>
+            
+            <div class="main-grid">
+                <!-- Left Column -->
+                <div class="posts-column">
+                    
+                    <article class="post-card">
+                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Code" class="post-image">
+                        <span class="tag tag-programming">Programming</span>
+                        <h3 class="post-title">Avoiding Common JavaScript Mistakes and Writing Clean Code</h3>
+                        <p class="post-excerpt">Starting out in programming is thrilling, yet the number of languages available makes it difficult to decide where to begin.</p>
+                        <div class="post-meta">05 Jan, 2025  5 Min Read</div>
+                    </article>
+
+                    <article class="post-card">
+                        <img src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80" alt="Linux" class="post-image">
+                        <span class="tag tag-linux">Linux</span>
+                        <h3 class="post-title">Setting Up the Perfect Programming Environment on Ubuntu</h3>
+                        <p class="post-excerpt">Rooted in the principles of free software, Linux has evolved from a student's project into a cornerstone of modern technology.</p>
+                        <div class="post-meta">04 Jan, 2025  3 Min Read</div>
+                    </article>
+
+                    <article class="post-card">
+                        <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=800&q=80" alt="Security" class="post-image">
+                        <span class="tag tag-security">Security</span>
+                        <h3 class="post-title">Why Two-Factor Authentication is a Must-Have Tool</h3>
+                        <p class="post-excerpt">Protect your digital world with practical guides and insights into cybersecurity. Whether you're just getting started or want to deepen your knowledge.</p>
+                        <div class="post-meta">02 Jan, 2025  4 Min Read</div>
+                    </article>
+
+                    <div style="text-align: center; margin-top: 40px;">
+                        <button class="btn btn-primary">Load More</button>
+                    </div>
+
+                </div>
+
+                <!-- Right Column (Sidebar) -->
+                <aside class="sidebar">
+                    
+                    <div class="newsletter-box">
+                        <h3>Stay inspired weekly </h3>
+                        <p>Every Sunday, I deliver actionable tips for enhancing productivity, practical life advice, and top-notch insights.</p>
+                        <input type="email" placeholder="Your email address..." class="newsletter-input">
+                        <button class="newsletter-btn">Join Now</button>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <div class="social-icons" style="justify-content: center; margin-bottom: 30px;">
+                            <i class="fab fa-twitter fa-lg"></i>
+                            <i class="fab fa-facebook fa-lg"></i>
+                            <i class="fab fa-instagram fa-lg"></i>
+                            <i class="fab fa-github fa-lg"></i>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Featured posts</h4>
+                        
+                        <div class="small-post">
+                            <img src="https://images.unsplash.com/photo-1607799275518-d58665d099db?auto=format&fit=crop&w=150&q=80" alt="Thumb">
+                            <div class="small-post-content">
+                                <h4>Why I Switched to Arch Linux and Never Looked Back</h4>
+                                <div class="post-meta">15 Dec, 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="small-post">
+                            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=150&q=80" alt="Thumb">
+                            <div class="small-post-content">
+                                <h4>Automating Routine Tasks with Bash Scripts</h4>
+                                <div class="post-meta">15 Nov, 2024</div>
+                            </div>
+                        </div>
+
+                        <div class="small-post">
+                            <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=150&q=80" alt="Thumb">
+                            <div class="small-post-content">
+                                <h4>How Games Keep Players Engaged and Motivated</h4>
+                                <div class="post-meta">19 Oct, 2024</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-section">
+                        <h4 class="sidebar-title">Topics</h4>
+                        <div class="topic-tags">
+                            <span class="tag tag-games">Games</span>
+                            <span class="tag tag-security">Movies</span>
+                            <span class="tag tag-security">Security</span>
+                            <span class="tag tag-linux">Productivity</span>
+                            <span class="tag tag-linux">Linux</span>
+                            <span class="tag tag-programming">Programming</span>
+                        </div>
+                    </div>
+
+                </aside>
+            </div>
+        </section>
+
+        <!-- Hacker's Haven -->
+        <section class="hackers-haven">
+            <h2 class="section-title">Hacker's Haven</h2>
+            <div class="grid-4">
+                <article class="card-small">
+                    <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=400&q=80" alt="Code">
+                    <span class="tag tag-programming">Programming</span>
+                    <h3>Avoiding Common JavaScript Mistakes</h3>
+                </article>
+                <article class="card-small">
+                    <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&w=400&q=80" alt="Linux">
+                    <span class="tag tag-linux">Linux</span>
+                    <h3>Setting Up the Perfect Programming Environment</h3>
+                </article>
+                <article class="card-small">
+                    <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=400&q=80" alt="Prod">
+                    <span class="tag tag-linux">Productivity</span>
+                    <h3>Top 5 Productivity Tools I Use Daily</h3>
+                </article>
+                <article class="card-small">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=400&q=80" alt="Sec">
+                    <span class="tag tag-security">Security</span>
+                    <h3>Why Two-Factor Authentication is a Must</h3>
+                </article>
+            </div>
+        </section>
+
+        <!-- Latest Videos -->
+        <section class="latest-videos">
+            <h2 class="section-title">Latest Videos</h2>
+            <div class="videos-grid">
+                <div class="video-card">
+                    <div class="video-number">1</div>
+                    <div class="video-thumb">
+                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80" alt="Video">
+                        <div class="play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3>Why Two-Factor Authentication is a Must-Have Tool</h3>
+                </div>
+                <div class="video-card">
+                    <div class="video-number">2</div>
+                    <div class="video-thumb">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Video">
+                        <div class="play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3>Top 5 Productivity Tools I Use Daily</h3>
+                </div>
+                <div class="video-card">
+                    <div class="video-number">3</div>
+                    <div class="video-thumb">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Video">
+                        <div class="play-icon"><i class="fas fa-play"></i></div>
+                    </div>
+                    <h3>Automating Routine Tasks with Bash Scripts</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- Byte Frame -->
+        <section class="byte-frame">
+            <h2 class="section-title">Byte Frame</h2>
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&w=600&q=80" alt="Gallery">
+                </div>
+            </div>
+        </section>
+
     </div>
 
+    <!-- Footer -->
     <footer>
-        <p>&copy; 2024 Trang Web Của Tôi. Được tạo với ❤️ và GitHub Pages</p>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <div class="logo" style="margin-bottom: 20px;">Coderon</div>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Here, I share ideas, tools, and methods that help me balance productivity with creativity while keeping control over my digital world. Dive in, get inspired, and feel free to share your thoughts!</p>
+                <div class="social-icons">
+                    <i class="fab fa-twitter"></i>
+                    <i class="fab fa-facebook"></i>
+                    <i class="fab fa-instagram"></i>
+                    <i class="fab fa-github"></i>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Recent Posts</h4>
+                <ul>
+                    <li>Avoiding Common JavaScript Mistakes</li>
+                    <li>Setting Up the Perfect Programming Environment</li>
+                    <li>Why Two-Factor Authentication is a Must-Have Tool</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Menu</h4>
+                <ul>
+                    <li>Home</li>
+                    <li>Videos</li>
+                    <li>Archive</li>
+                    <li>Get Theme</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Pages</h4>
+                <ul>
+                    <li>About</li>
+                    <li>Contact</li>
+                    <li>Elements</li>
+                </ul>
+            </div>
+        </div>
+        <div class="container" style="text-align: center; padding-top: 40px; color: var(--text-muted); font-size: 0.8rem;">
+            2025  Coderon. Crafted & Designed by Artem Sheludko.
+        </div>
     </footer>
+
 </body>
 </html>
