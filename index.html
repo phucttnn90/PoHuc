@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Web Của Tôi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        nav {
+            background-color: #2c3e50;
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #667eea;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        section {
+            margin-bottom: 4rem;
+        }
+
+        section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            nav ul {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚀 Chào mừng đến với trang web của tôi</h1>
+        <p>Được xây dựng với GitHub Pages</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#home">Trang chủ</a></li>
+            <li><a href="#about">Giới thiệu</a></li>
+            <li><a href="#projects">Dự án</a></li>
+            <li><a href="#contact">Liên hệ</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section id="home">
+            <h2>Trang chủ</h2>
+            <p>Đây là trang web tĩnh đơn giản được host trên GitHub Pages. Bạn có thể tùy chỉnh nội dung này theo ý muốn của mình.</p>
+        </section>
+
+        <section id="about">
+            <h2>Giới thiệu</h2>
+            <p>GitHub Pages là một dịch vụ hosting tĩnh miễn phí cho phép bạn tạo website trực tiếp từ repository GitHub của mình.</p>
+        </section>
+
+        <section id="projects">
+            <h2>Dự án</h2>
+            <div class="card-grid">
+                <div class="card">
+                    <h3>Dự án 1</h3>
+                    <p>Mô tả ngắn về dự án của bạn. Có thể là portfolio, blog, hoặc bất kỳ nội dung nào bạn muốn.</p>
+                    <a href="#" class="btn">Xem thêm</a>
+                </div>
+                <div class="card">
+                    <h3>Dự án 2</h3>
+                    <p>Thêm nhiều card để showcase các dự án hoặc nội dung khác nhau của bạn.</p>
+                    <a href="#" class="btn">Xem thêm</a>
+                </div>
+                <div class="card">
+                    <h3>Dự án 3</h3>
+                    <p>GitHub Pages hỗ trợ HTML, CSS, và JavaScript thuần túy hoặc các static site generator như Jekyll.</p>
+                    <a href="#" class="btn">Xem thêm</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Liên hệ</h2>
+            <p>Email: your-email@example.com</p>
+            <p>GitHub: <a href="https://github.com/your-username" style="color: #667eea;">@your-username</a></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Trang Web Của Tôi. Được tạo với ❤️ và GitHub Pages</p>
+    </footer>
+</body>
+</html>
