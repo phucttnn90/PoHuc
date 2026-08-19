@@ -1,290 +1,644 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coderon - Digital Explorer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trái Tim Sống</title>
+
+<style>
+  :root {
+    --bg-0: #0a0405;
+    --bg-1: #170a0c;
+    --heart-deep: #b4123a;
+    --heart-core: #ff2d55;
+    --heart-bright: #ff9db0;
+    --glow: #ff3355;
+    --ink: #f3dde1;
+    --ink-dim: #9c6b73;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-0);
+    cursor: default;
+  }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+  }
+
+  canvas {
+    position: fixed;
+    inset: 0;
+    display: block;
+    touch-action: none;
+  }
+</style>
 </head>
 <body>
+<canvas id="stage"></canvas>
 
-    <!-- Header -->
-    <header>
-        <div class="container header-inner">
-            <div class="logo">Coderon</div>
-            <nav class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">Videos</a>
-                <a href="#">Archive</a>
-                <a href="#">Get Theme</a>
-                <a href="#">...</a>
-            </nav>
-            <div class="header-actions">
-                <div class="search-bar">
-                    <i class="fas fa-search"></i>
-                    <span>Search posts...</span>
-                </div>
-            </div>
-        </div>
-    </header>
+<script>
+(function () {
+  const canvas = document.getElementById('stage');
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    <div class="container">
-        
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-card">
-                <div class="hero-image"></div>
-                <div class="hero-content">
-                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80" alt="Alex" class="avatar">
-                    <h1 class="hero-title">Hi! I'm Alex </h1>
-                    <p class="hero-desc">A digital explorer, coder, and Linux advocate. This blog is my personal knowledge base on productivity, programming, and the freedom of information.</p>
-                    <button class="btn btn-primary">Let's Work Together</button>
-                </div>
-            </div>
-        </section>
+  let W = 0, H = 0, DPR = 1;
+  let centerX = 0, centerY = 0, heartScale = 1;
 
-        <!-- Nerd Stuff -->
-        <section class="nerd-stuff">
-            <h2 class="section-title" style="text-align: center;">Nerd Stuff</h2>
-            <div class="nerd-stuff-grid">
-                <div class="nerd-item"><i class="fas fa-gamepad fa-2x" style="color: #a78bfa;"></i></div>
-                <div class="nerd-item"><i class="fas fa-keyboard fa-2x" style="color: #f472b6;"></i></div>
-                <div class="nerd-item"><i class="fas fa-headphones fa-2x" style="color: #fbbf24;"></i></div>
-                <div class="nerd-item"><i class="fas fa-mouse fa-2x" style="color: #34d399;"></i></div>
-            </div>
-        </section>
+  // --- Parametric heart curve, sampled and re-centered numerically ---
+  // Returns a raw (unscaled, unflipped) point on the classic heart curve.
+  function rawHeartPoint(t) {
+    const x = 16 * Math.pow(Math.sin(t), 3);
+    const y = 13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t);
+    return [x, -y]; // flip y so the shape sits point-down in canvas space
+  }
 
-        <!-- The Binary Journal -->
-        <section class="binary-journal">
-            <h2 class="section-title">The Binary Journal</h2>
-            
-            <div class="main-grid">
-                <!-- Left Column -->
-                <div class="posts-column">
-                    
-                    <article class="post-card">
-                        <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80" alt="Code" class="post-image">
-                        <span class="tag tag-programming">Programming</span>
-                        <h3 class="post-title">Avoiding Common JavaScript Mistakes and Writing Clean Code</h3>
-                        <p class="post-excerpt">Starting out in programming is thrilling, yet the number of languages available makes it difficult to decide where to begin.</p>
-                        <div class="post-meta">05 Jan, 2025  5 Min Read</div>
-                    </article>
+  let heartOffset = { x: 0, y: 0 };
+  (function computeHeartOffset() {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (let i = 0; i <= 400; i++) {
+      const t = (i / 400) * Math.PI * 2;
+      const [x, y] = rawHeartPoint(t);
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+    heartOffset = { x: (minX + maxX) / 2, y: (minY + maxY) / 2 };
+  })();
 
-                    <article class="post-card">
-                        <img src="https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80" alt="Linux" class="post-image">
-                        <span class="tag tag-linux">Linux</span>
-                        <h3 class="post-title">Setting Up the Perfect Programming Environment on Ubuntu</h3>
-                        <p class="post-excerpt">Rooted in the principles of free software, Linux has evolved from a student's project into a cornerstone of modern technology.</p>
-                        <div class="post-meta">04 Jan, 2025  3 Min Read</div>
-                    </article>
+  function heartLocal(t, u) {
+    const [x, y] = rawHeartPoint(t);
+    return [(x - heartOffset.x) * u, (y - heartOffset.y) * u];
+  }
 
-                    <article class="post-card">
-                        <img src="https://images.unsplash.com/photo-1614064641938-3bbee52942c7?auto=format&fit=crop&w=800&q=80" alt="Security" class="post-image">
-                        <span class="tag tag-security">Security</span>
-                        <h3 class="post-title">Why Two-Factor Authentication is a Must-Have Tool</h3>
-                        <p class="post-excerpt">Protect your digital world with practical guides and insights into cybersecurity. Whether you're just getting started or want to deepen your knowledge.</p>
-                        <div class="post-meta">02 Jan, 2025  4 Min Read</div>
-                    </article>
+  // Boundary polygon (u=1) used to test whether a point lies inside the heart,
+  // so particles can be scattered uniformly by area instead of radially from the origin.
+  const HEART_POLY = (() => {
+    const pts = [];
+    for (let i = 0; i < 240; i++) {
+      pts.push(heartLocal((i / 240) * Math.PI * 2, 1));
+    }
+    return pts;
+  })();
+  const HEART_BOUNDS = (() => {
+    let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+    for (const [x, y] of HEART_POLY) {
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+    return { minX, maxX, minY, maxY };
+  })();
+  function pointInHeart(px, py) {
+    let inside = false;
+    for (let i = 0, j = HEART_POLY.length - 1; i < HEART_POLY.length; j = i++) {
+      const [xi, yi] = HEART_POLY[i];
+      const [xj, yj] = HEART_POLY[j];
+      const intersects = (yi > py) !== (yj > py) &&
+        px < (xj - xi) * (py - yi) / (yj - yi) + xi;
+      if (intersects) inside = !inside;
+    }
+    return inside;
+  }
 
-                    <div style="text-align: center; margin-top: 40px;">
-                        <button class="btn btn-primary">Load More</button>
-                    </div>
+  // Distance from the origin to the heart's boundary at a given angle, via ray casting.
+  // Lets the cursor's "hole" follow the heart's outline instead of a plain circle.
+  function raySegmentDist(dx, dy, ax, ay, bx, by) {
+    const v1x = -ax, v1y = -ay;
+    const v2x = bx - ax, v2y = by - ay;
+    const v3x = -dy, v3y = dx;
+    const dot = v2x * v3x + v2y * v3y;
+    if (Math.abs(dot) < 1e-9) return null;
+    const t1 = (v2x * v1y - v2y * v1x) / dot;
+    const t2 = (v1x * v3x + v1y * v3y) / dot;
+    if (t1 >= 0 && t2 >= 0 && t2 <= 1) return t1;
+    return null;
+  }
+  const BOUNDARY_STEPS = 360;
+  const BOUNDARY_TABLE = (() => {
+    const table = new Float32Array(BOUNDARY_STEPS);
+    for (let i = 0; i < BOUNDARY_STEPS; i++) {
+      const angle = (i / BOUNDARY_STEPS) * Math.PI * 2;
+      const dx = Math.cos(angle), dy = Math.sin(angle);
+      let minT = Infinity;
+      for (let j = 0; j < HEART_POLY.length; j++) {
+        const [ax, ay] = HEART_POLY[j];
+        const [bx, by] = HEART_POLY[(j + 1) % HEART_POLY.length];
+        const t = raySegmentDist(dx, dy, ax, ay, bx, by);
+        if (t !== null && t < minT) minT = t;
+      }
+      table[i] = isFinite(minT) ? minT : 10;
+    }
+    return table;
+  })();
+  function heartBoundaryRadius(angle) {
+    let a = angle % (Math.PI * 2);
+    if (a < 0) a += Math.PI * 2;
+    const idx = (a / (Math.PI * 2)) * BOUNDARY_STEPS;
+    const i0 = Math.floor(idx) % BOUNDARY_STEPS;
+    const i1 = (i0 + 1) % BOUNDARY_STEPS;
+    const frac = idx - Math.floor(idx);
+    return BOUNDARY_TABLE[i0] * (1 - frac) + BOUNDARY_TABLE[i1] * frac;
+  }
 
-                </div>
+  // --- Particle field ---
+  let particles = [];
+  function buildParticles() {
+    const count = Math.max(900, Math.min(3400, Math.floor((W * H) / (620 * DPR))));
+    particles = [];
+    const { minX, maxX, minY, maxY } = HEART_BOUNDS;
+    for (let i = 0; i < count; i++) {
+      let lx = 0, ly = 0;
+      for (let tries = 0; tries < 40; tries++) {
+        const rx = minX + Math.random() * (maxX - minX);
+        const ry = minY + Math.random() * (maxY - minY);
+        if (pointInHeart(rx, ry)) { lx = rx; ly = ry; break; }
+      }
+      const isSpark = Math.random() < 0.06;
+      particles.push({
+        homeX: lx, homeY: ly,
+        x: centerX + lx * heartScale, y: centerY + ly * heartScale,
+        vx: 0, vy: 0,
+        r: (isSpark ? 2.1 + Math.random() * 1.1 : 0.9 + Math.random() * 1.5) * DPR,
+        c: isSpark ? 2 : (Math.random() < 0.5 ? 0 : 1),
+        phase: Math.random() * Math.PI * 2,
+        wobble: 0.4 + Math.random() * 0.8
+      });
+    }
+  }
 
-                <!-- Right Column (Sidebar) -->
-                <aside class="sidebar">
-                    
-                    <div class="newsletter-box">
-                        <h3>Stay inspired weekly </h3>
-                        <p>Every Sunday, I deliver actionable tips for enhancing productivity, practical life advice, and top-notch insights.</p>
-                        <input type="email" placeholder="Your email address..." class="newsletter-input">
-                        <button class="newsletter-btn">Join Now</button>
-                    </div>
+  // --- Color themes: right-click cycles between them, colors cross-fade ---
+  function rgbStr(c, a) { return `rgba(${c[0] | 0},${c[1] | 0},${c[2] | 0},${a})`; }
+  function lerpRGB(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]; }
+  const THEMES = [
+    { // Đỏ cổ điển
+      bgInner: [23, 10, 12], bgOuter: [10, 4, 5],
+      colors: [[180, 18, 58], [255, 45, 85], [255, 179, 193]],
+      glow: [255, 45, 85], streak: [255, 225, 230],
+      burst: [[255, 59, 92], [255, 143, 168]]
+    },
+    { // Hồng pastel
+      bgInner: [26, 15, 21], bgOuter: [13, 7, 11],
+      colors: [[201, 110, 140], [255, 150, 181], [255, 219, 232]],
+      glow: [255, 150, 181], streak: [255, 238, 244],
+      burst: [[255, 150, 181], [255, 219, 232]]
+    },
+    { // Vàng gold
+      bgInner: [24, 16, 7], bgOuter: [11, 7, 3],
+      colors: [[163, 110, 20], [255, 183, 59], [255, 227, 158]],
+      glow: [255, 183, 59], streak: [255, 241, 214],
+      burst: [[255, 183, 59], [255, 227, 158]]
+    },
+    { // Xanh neon
+      bgInner: [7, 13, 27], bgOuter: [3, 6, 13],
+      colors: [[30, 90, 180], [64, 190, 255], [186, 236, 255]],
+      glow: [64, 190, 255], streak: [222, 246, 255],
+      burst: [[64, 190, 255], [186, 236, 255]]
+    }
+  ];
+  let themeIndex = 0;
+  let themeFrom = THEMES[0], themeT = 1;
+  function lerpTheme(a, b, t) {
+    return {
+      bgInner: lerpRGB(a.bgInner, b.bgInner, t),
+      bgOuter: lerpRGB(a.bgOuter, b.bgOuter, t),
+      colors: a.colors.map((c, i) => lerpRGB(c, b.colors[i], t)),
+      glow: lerpRGB(a.glow, b.glow, t),
+      streak: lerpRGB(a.streak, b.streak, t),
+      burst: a.burst.map((c, i) => lerpRGB(c, b.burst[i], t))
+    };
+  }
+  function currentTheme() {
+    return themeT >= 1 ? THEMES[themeIndex] : lerpTheme(themeFrom, THEMES[themeIndex], themeT);
+  }
+  function cycleTheme() {
+    themeFrom = currentTheme();
+    themeIndex = (themeIndex + 1) % THEMES.length;
+    themeT = 0;
+  }
+  window.addEventListener('contextmenu', (e) => { e.preventDefault(); cycleTheme(); });
 
-                    <div class="sidebar-section">
-                        <div class="social-icons" style="justify-content: center; margin-bottom: 30px;">
-                            <i class="fab fa-twitter fa-lg"></i>
-                            <i class="fab fa-facebook fa-lg"></i>
-                            <i class="fab fa-instagram fa-lg"></i>
-                            <i class="fab fa-github fa-lg"></i>
-                        </div>
-                    </div>
+  // --- Mini hearts: click bursts and a drag-painted trail, sharing one pool ---
+  let bursts = [];
+  function heartPathAt(cx, cy, size, rot) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+    ctx.beginPath();
+    for (let i = 0; i <= 60; i++) {
+      const t = (i / 60) * Math.PI * 2;
+      const [x, y] = heartLocal(t, 1);
+      const px = x * size, py = y * size;
+      if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.restore();
+  }
 
-                    <div class="sidebar-section">
-                        <h4 class="sidebar-title">Featured posts</h4>
-                        
-                        <div class="small-post">
-                            <img src="https://images.unsplash.com/photo-1607799275518-d58665d099db?auto=format&fit=crop&w=150&q=80" alt="Thumb">
-                            <div class="small-post-content">
-                                <h4>Why I Switched to Arch Linux and Never Looked Back</h4>
-                                <div class="post-meta">15 Dec, 2024</div>
-                            </div>
-                        </div>
+  function spawnBurst(x, y) {
+    const theme = currentTheme();
+    const n = 4 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < n; i++) {
+      const ang = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
+      const speed = (1.1 + Math.random() * 1.3) * DPR;
+      bursts.push({
+        x: x + (Math.random() - 0.5) * 14 * DPR,
+        y: y + (Math.random() - 0.5) * 14 * DPR,
+        vx: Math.cos(ang) * speed,
+        vy: Math.sin(ang) * speed,
+        size: (5 + Math.random() * 7) * DPR,
+        rot: (Math.random() - 0.5) * 0.6,
+        vrot: (Math.random() - 0.5) * 0.02,
+        life: 0,
+        maxLife: 1.6 + Math.random() * 0.8,
+        hue: rgbStr(theme.burst[Math.random() < 0.5 ? 0 : 1], 1)
+      });
+    }
+  }
 
-                        <div class="small-post">
-                            <img src="https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&w=150&q=80" alt="Thumb">
-                            <div class="small-post-content">
-                                <h4>Automating Routine Tasks with Bash Scripts</h4>
-                                <div class="post-meta">15 Nov, 2024</div>
-                            </div>
-                        </div>
+  function spawnTrailHeart(x, y) {
+    const theme = currentTheme();
+    bursts.push({
+      x: x + (Math.random() - 0.5) * 6 * DPR,
+      y: y + (Math.random() - 0.5) * 6 * DPR,
+      vx: (Math.random() - 0.5) * 0.3 * DPR,
+      vy: -(0.15 + Math.random() * 0.2) * DPR,
+      size: (4 + Math.random() * 4) * DPR,
+      rot: (Math.random() - 0.5) * 0.5,
+      vrot: (Math.random() - 0.5) * 0.015,
+      life: 0,
+      maxLife: 1.1 + Math.random() * 0.6,
+      hue: rgbStr(theme.burst[Math.random() < 0.5 ? 0 : 1], 1)
+    });
+  }
 
-                        <div class="small-post">
-                            <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?auto=format&fit=crop&w=150&q=80" alt="Thumb">
-                            <div class="small-post-content">
-                                <h4>How Games Keep Players Engaged and Motivated</h4>
-                                <div class="post-meta">19 Oct, 2024</div>
-                            </div>
-                        </div>
-                    </div>
+  // --- Faint static starfield filling the empty background ---
+  let stars = [];
+  function buildStars() {
+    const count = Math.min(130, Math.max(70, Math.round((W * H) / (800000 * DPR))));
+    stars = [];
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: (0.6 + Math.random() * 1.1) * DPR,
+        phase: Math.random() * Math.PI * 2,
+        speed: 0.4 + Math.random() * 0.6,
+        baseAlpha: 0.12 + Math.random() * 0.28
+      });
+    }
+  }
+  function drawStars(theme, elapsed) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (const s of stars) {
+      const twinkle = reduceMotion ? 1 : (0.6 + 0.4 * Math.sin(elapsed * s.speed + s.phase));
+      ctx.beginPath();
+      ctx.fillStyle = rgbStr(theme.streak, s.baseAlpha * twinkle);
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
 
-                    <div class="sidebar-section">
-                        <h4 class="sidebar-title">Topics</h4>
-                        <div class="topic-tags">
-                            <span class="tag tag-games">Games</span>
-                            <span class="tag tag-security">Movies</span>
-                            <span class="tag tag-security">Security</span>
-                            <span class="tag tag-linux">Productivity</span>
-                            <span class="tag tag-linux">Linux</span>
-                            <span class="tag tag-programming">Programming</span>
-                        </div>
-                    </div>
+  // --- Shooting stars, drifting across the background ---
+  let shootingStars = [];
+  let starTimer = 0;
+  let nextStarAt = 1.5 + Math.random() * 2.5;
 
-                </aside>
-            </div>
-        </section>
+  function spawnShootingStar() {
+    const fromLeft = Math.random() < 0.5;
+    const dirX = fromLeft ? 1 : -1;
+    const angle = (16 + Math.random() * 16) * Math.PI / 180;
+    const speed = (6.5 + Math.random() * 3) * DPR;
+    shootingStars.push({
+      x: fromLeft ? -60 * DPR : W + 60 * DPR,
+      y: (0.04 + Math.random() * 0.4) * H,
+      vx: dirX * Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      size: (6 + Math.random() * 5) * DPR,
+      trail: []
+    });
+  }
 
-        <!-- Hacker's Haven -->
-        <section class="hackers-haven">
-            <h2 class="section-title">Hacker's Haven</h2>
-            <div class="grid-4">
-                <article class="card-small">
-                    <img src="https://images.unsplash.com/photo-1587620962725-abab7fe55159?auto=format&fit=crop&w=400&q=80" alt="Code">
-                    <span class="tag tag-programming">Programming</span>
-                    <h3>Avoiding Common JavaScript Mistakes</h3>
-                </article>
-                <article class="card-small">
-                    <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&w=400&q=80" alt="Linux">
-                    <span class="tag tag-linux">Linux</span>
-                    <h3>Setting Up the Perfect Programming Environment</h3>
-                </article>
-                <article class="card-small">
-                    <img src="https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?auto=format&fit=crop&w=400&q=80" alt="Prod">
-                    <span class="tag tag-linux">Productivity</span>
-                    <h3>Top 5 Productivity Tools I Use Daily</h3>
-                </article>
-                <article class="card-small">
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=400&q=80" alt="Sec">
-                    <span class="tag tag-security">Security</span>
-                    <h3>Why Two-Factor Authentication is a Must</h3>
-                </article>
-            </div>
-        </section>
+  function updateAndDrawShootingStars(dt, theme) {
+    if (reduceMotion) return;
+    starTimer += dt;
+    if (starTimer > nextStarAt && shootingStars.length < 2) {
+      spawnShootingStar();
+      starTimer = 0;
+      nextStarAt = 3.5 + Math.random() * 5;
+    }
 
-        <!-- Latest Videos -->
-        <section class="latest-videos">
-            <h2 class="section-title">Latest Videos</h2>
-            <div class="videos-grid">
-                <div class="video-card">
-                    <div class="video-number">1</div>
-                    <div class="video-thumb">
-                        <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=600&q=80" alt="Video">
-                        <div class="play-icon"><i class="fas fa-play"></i></div>
-                    </div>
-                    <h3>Why Two-Factor Authentication is a Must-Have Tool</h3>
-                </div>
-                <div class="video-card">
-                    <div class="video-number">2</div>
-                    <div class="video-thumb">
-                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80" alt="Video">
-                        <div class="play-icon"><i class="fas fa-play"></i></div>
-                    </div>
-                    <h3>Top 5 Productivity Tools I Use Daily</h3>
-                </div>
-                <div class="video-card">
-                    <div class="video-number">3</div>
-                    <div class="video-thumb">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Video">
-                        <div class="play-icon"><i class="fas fa-play"></i></div>
-                    </div>
-                    <h3>Automating Routine Tasks with Bash Scripts</h3>
-                </div>
-            </div>
-        </section>
+    for (let i = shootingStars.length - 1; i >= 0; i--) {
+      const s = shootingStars[i];
+      s.trail.push({ x: s.x, y: s.y });
+      if (s.trail.length > 16) s.trail.shift();
+      s.x += s.vx;
+      s.y += s.vy;
+      if (s.x < -120 * DPR || s.x > W + 120 * DPR || s.y > H + 120 * DPR) {
+        shootingStars.splice(i, 1);
+        continue;
+      }
 
-        <!-- Byte Frame -->
-        <section class="byte-frame">
-            <h2 class="section-title">Byte Frame</h2>
-            <div class="gallery-grid">
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-                <div class="gallery-item">
-                    <img src="https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&w=600&q=80" alt="Gallery">
-                </div>
-            </div>
-        </section>
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      for (let k = 0; k < s.trail.length; k++) {
+        const pt = s.trail[k];
+        const frac = k / s.trail.length;
+        ctx.beginPath();
+        ctx.fillStyle = rgbStr(theme.glow, frac * 0.45);
+        ctx.arc(pt.x, pt.y, s.size * 0.16 * frac + 0.3 * DPR, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      const glowR = s.size * 2.4;
+      const glow = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
+      glow.addColorStop(0, rgbStr(theme.glow, 0.55));
+      glow.addColorStop(1, rgbStr(theme.glow, 0));
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
+      ctx.fill();
 
-    </div>
+      const ang = Math.atan2(s.vy, s.vx);
+      const streakLen = s.size * 3.4;
+      const tailX = s.x - Math.cos(ang) * streakLen;
+      const tailY = s.y - Math.sin(ang) * streakLen;
+      const streak = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
+      streak.addColorStop(0, rgbStr(theme.streak, 0));
+      streak.addColorStop(1, rgbStr(theme.streak, 0.9));
+      ctx.strokeStyle = streak;
+      ctx.lineWidth = s.size * 0.3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(tailX, tailY);
+      ctx.lineTo(s.x, s.y);
+      ctx.stroke();
 
-    <!-- Footer -->
-    <footer>
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <div class="logo" style="margin-bottom: 20px;">Coderon</div>
-                <p style="color: var(--text-muted); margin-bottom: 20px;">Here, I share ideas, tools, and methods that help me balance productivity with creativity while keeping control over my digital world. Dive in, get inspired, and feel free to share your thoughts!</p>
-                <div class="social-icons">
-                    <i class="fab fa-twitter"></i>
-                    <i class="fab fa-facebook"></i>
-                    <i class="fab fa-instagram"></i>
-                    <i class="fab fa-github"></i>
-                </div>
-            </div>
-            <div class="footer-col">
-                <h4>Recent Posts</h4>
-                <ul>
-                    <li>Avoiding Common JavaScript Mistakes</li>
-                    <li>Setting Up the Perfect Programming Environment</li>
-                    <li>Why Two-Factor Authentication is a Must-Have Tool</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Menu</h4>
-                <ul>
-                    <li>Home</li>
-                    <li>Videos</li>
-                    <li>Archive</li>
-                    <li>Get Theme</li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Pages</h4>
-                <ul>
-                    <li>About</li>
-                    <li>Contact</li>
-                    <li>Elements</li>
-                </ul>
-            </div>
-        </div>
-        <div class="container" style="text-align: center; padding-top: 40px; color: var(--text-muted); font-size: 0.8rem;">
-            2025  Coderon. Crafted & Designed by Artem Sheludko.
-        </div>
-    </footer>
+      ctx.beginPath();
+      ctx.fillStyle = rgbStr(theme.streak, 1);
+      ctx.arc(s.x, s.y, s.size * 0.22, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
 
+  // --- Parallax echo layers behind the main heart, for depth ---
+  let parallaxX = 0, parallaxY = 0;
+  function drawParallaxLayer(theme, pulse, elapsed, scaleMul, alpha, driftAmp, phase, mouseFactor) {
+    const driftX = reduceMotion ? 0 : Math.sin(elapsed * 0.15 + phase) * driftAmp * DPR;
+    const driftY = reduceMotion ? 0 : Math.cos(elapsed * 0.12 + phase) * driftAmp * DPR * 0.6;
+    const cx = centerX + driftX + parallaxX * mouseFactor;
+    const cy = centerY + driftY + parallaxY * mouseFactor;
+    const layerPulse = 1 + (pulse - 1) * 0.4;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = rgbStr(theme.colors[0], 1);
+    heartPathAt(cx, cy, heartScale * scaleMul * layerPulse, 0);
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // --- Mouse / touch state (drag paints a trail, holding still shatters the heart) ---
+  const pointer = { x: -9999, y: -9999, active: false };
+  let isDragging = false;
+  let lastTrailPos = null;
+
+  function setPointer(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = (clientX - rect.left) * DPR;
+    pointer.y = (clientY - rect.top) * DPR;
+    pointer.active = true;
+  }
+  function trySpawnTrail(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (clientX - rect.left) * DPR, y = (clientY - rect.top) * DPR;
+    if (lastTrailPos) {
+      const dx = x - lastTrailPos.x, dy = y - lastTrailPos.y;
+      if (Math.sqrt(dx * dx + dy * dy) < 14 * DPR) return;
+    }
+    lastTrailPos = { x, y };
+    spawnTrailHeart(x, y);
+  }
+
+  window.addEventListener('mousemove', (e) => {
+    setPointer(e.clientX, e.clientY);
+    if (isDragging) trySpawnTrail(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = true;
+    lastTrailPos = null;
+  });
+  window.addEventListener('mouseup', () => { isDragging = false; lastTrailPos = null; });
+  window.addEventListener('mouseleave', () => { pointer.active = false; isDragging = false; lastTrailPos = null; });
+  window.addEventListener('click', (e) => spawnBurst(e.clientX * DPR, e.clientY * DPR));
+  window.addEventListener('touchmove', (e) => {
+    if (e.touches[0]) {
+      setPointer(e.touches[0].clientX, e.touches[0].clientY);
+      if (isDragging) trySpawnTrail(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  }, { passive: true });
+  window.addEventListener('touchstart', (e) => {
+    if (e.touches[0]) {
+      isDragging = true;
+      lastTrailPos = null;
+      setPointer(e.touches[0].clientX, e.touches[0].clientY);
+      spawnBurst(e.touches[0].clientX * DPR, e.touches[0].clientY * DPR);
+    }
+  }, { passive: true });
+  window.addEventListener('touchend', () => { isDragging = false; lastTrailPos = null; pointer.active = false; });
+
+  // --- Sizing ---
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = canvas.width = Math.floor(window.innerWidth * DPR);
+    H = canvas.height = Math.floor(window.innerHeight * DPR);
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    centerX = W / 2;
+    centerY = H / 2;
+    heartScale = Math.min(W, H) / 34;
+    buildParticles();
+    buildStars();
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  // --- Heartbeat rhythm: two pulses ("lub-dub") per cycle ---
+  function beatPulse(tSec) {
+    if (reduceMotion) return 1;
+    const cycle = 1.05;
+    const phase = (tSec % cycle) / cycle;
+    const bump = (center, width, amp) => amp * Math.exp(-Math.pow((phase - center) / width, 2));
+    return 1 + bump(0.05, 0.05, 0.085) + bump(0.24, 0.07, 0.045);
+  }
+
+  // --- Hold the cursor still on the heart to shatter nearby particles; they spring back on their own ---
+  let holdAnchor = null, holdTime = 0, lastShatterAt = -999;
+  function shatterNear(x, y) {
+    const radius = heartScale * 9;
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      const dx = p.x - x, dy = p.y - y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < radius) {
+        const falloff = 1 - dist / radius;
+        const ang = Math.atan2(dy, dx) + (Math.random() - 0.5) * 0.6;
+        const power = (3 + Math.random() * 5) * falloff * DPR;
+        p.vx += Math.cos(ang) * power;
+        p.vy += Math.sin(ang) * power;
+      }
+    }
+  }
+
+  // --- Main loop ---
+  let last = performance.now();
+  let elapsed = 0;
+  const CURSOR_HOLE_SCALE = () => 5 * DPR;
+  const SPRING_K = 0.055;
+  const DAMPING = 0.82;
+
+  function frame(now) {
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+    elapsed += dt;
+
+    const theme = currentTheme();
+    if (themeT < 1) themeT = Math.min(1, themeT + dt / 0.8);
+
+    ctx.clearRect(0, 0, W, H);
+
+    // vignette ground
+    const grd = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, Math.max(W, H) * 0.75);
+    grd.addColorStop(0, rgbStr(theme.bgInner, 1));
+    grd.addColorStop(1, rgbStr(theme.bgOuter, 1));
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, W, H);
+
+    drawStars(theme, elapsed);
+
+    const pulse = beatPulse(elapsed);
+
+    // ambient glow behind the heart, synced to the beat
+    const glowR = heartScale * 15 * pulse;
+    const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, glowR);
+    glow.addColorStop(0, rgbStr(theme.glow, 0.16));
+    glow.addColorStop(0.6, rgbStr(theme.glow, 0.06));
+    glow.addColorStop(1, rgbStr(theme.glow, 0));
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    // parallax echo layers (farthest first), gently trailing the cursor
+    const targetParX = pointer.active ? (pointer.x - centerX) : 0;
+    const targetParY = pointer.active ? (pointer.y - centerY) : 0;
+    parallaxX += (targetParX - parallaxX) * 0.04;
+    parallaxY += (targetParY - parallaxY) * 0.04;
+    drawParallaxLayer(theme, pulse, elapsed, 1.44, 0.05, 10, 0, 0.015);
+    drawParallaxLayer(theme, pulse, elapsed, 1.15, 0.08, 6, 2.1, 0.028);
+
+    // shooting stars, behind the main particle heart
+    updateAndDrawShootingStars(dt, theme);
+
+    // holding the cursor still shatters nearby particles; the spring below reassembles them
+    if (pointer.active) {
+      if (!holdAnchor) {
+        holdAnchor = { x: pointer.x, y: pointer.y };
+        holdTime = 0;
+      } else {
+        const hdx = pointer.x - holdAnchor.x, hdy = pointer.y - holdAnchor.y;
+        if (Math.sqrt(hdx * hdx + hdy * hdy) > 10 * DPR) {
+          holdAnchor = { x: pointer.x, y: pointer.y };
+          holdTime = 0;
+        } else {
+          holdTime += dt;
+        }
+      }
+      if (holdTime > 1.0 && elapsed - lastShatterAt > 1.8) {
+        shatterNear(pointer.x, pointer.y);
+        lastShatterAt = elapsed;
+      }
+    } else {
+      holdAnchor = null;
+      holdTime = 0;
+    }
+
+    // particles
+    ctx.globalCompositeOperation = 'lighter';
+    const holeScale = CURSOR_HOLE_SCALE();
+    for (let i = 0; i < particles.length; i++) {
+      const p = particles[i];
+      let tx = centerX + p.homeX * heartScale * pulse;
+      let ty = centerY + p.homeY * heartScale * pulse;
+
+      if (!reduceMotion) {
+        tx += Math.sin(elapsed * p.wobble + p.phase) * 1.5 * DPR;
+        ty += Math.cos(elapsed * p.wobble * 0.8 + p.phase) * 1.5 * DPR;
+      }
+
+      let ax = (tx - p.x) * SPRING_K;
+      let ay = (ty - p.y) * SPRING_K;
+
+      if (pointer.active) {
+        const dx = p.x - pointer.x, dy = p.y - pointer.y;
+        const dist = Math.sqrt(dx * dx + dy * dy) || 0.001;
+        // The "hole" around the cursor follows the heart's own outline rather than a circle.
+        const holeR = heartBoundaryRadius(Math.atan2(dy, dx)) * holeScale;
+        if (dist < holeR) {
+          const force = (1 - dist / holeR) * 6.5;
+          ax += (dx / dist) * force;
+          ay += (dy / dist) * force;
+        }
+      }
+
+      p.vx = (p.vx + ax) * DAMPING;
+      p.vy = (p.vy + ay) * DAMPING;
+      p.x += p.vx;
+      p.y += p.vy;
+
+      ctx.beginPath();
+      ctx.fillStyle = rgbStr(theme.colors[p.c], 1);
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    // flying / trail mini hearts
+    for (let i = bursts.length - 1; i >= 0; i--) {
+      const b = bursts[i];
+      b.life += dt;
+      if (b.life >= b.maxLife) { bursts.splice(i, 1); continue; }
+      b.x += b.vx;
+      b.y += b.vy;
+      b.vy -= 0.012 * DPR;
+      b.vx *= 0.99;
+      b.rot += b.vrot;
+      const tlife = b.life / b.maxLife;
+      const alpha = tlife < 0.15 ? tlife / 0.15 : 1 - (tlife - 0.15) / 0.85;
+
+      ctx.globalAlpha = Math.max(0, alpha) * 0.9;
+      ctx.fillStyle = b.hue;
+      heartPathAt(b.x, b.y, b.size / 17, b.rot);
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 </body>
 </html>
